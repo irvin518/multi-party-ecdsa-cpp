@@ -180,14 +180,29 @@ endif()
 # Refer to single internal library only if it's not assembled into a big library.
 option(ENABLE_ASSEMBLE "Enable assemble" OFF)
 if (NOT ${ENABLE_ASSEMBLE})
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(PROTOBUF REQUIRED protobuf)  # depend on pkg-config, this looks for opencv.pc file
+    #find_package(PkgConfig REQUIRED)
+    #pkg_search_module(PROTOBUF REQUIRED protobuf)  # depend on pkg-config, this looks for opencv.pc file
 
     #set(OPENSSL_USE_STATIC_LIBS TRUE)
-    find_package(OpenSSL REQUIRED)
 
-    find_package(SafeheronCryptoSuites REQUIRED)
-    find_package(MPCFlow REQUIRED)
+    set(PROTOBUF_INCLUDE_DIRS  "${CMAKE_PREFIX_PATH}/include/")
+    set(PROTOBUF_LIBRARY_DIRS  "${CMAKE_PREFIX_PATH}/lib/")
+    set(PROTOBUF_LIBRARIES  "${CMAKE_PREFIX_PATH}/lib/libprotobuf.a")
+    #find_package(OpenSSL REQUIRED)
+     #设置openssl的库头文件
+        set(OPENSSL_INCLUDE_DIR  "${CMAKE_PREFIX_PATH}/include/")
+ #设置openssl的库路径
+        set(OPENSSL_SSL_LIBRARY "${CMAKE_PREFIX_PATH}/lib/libssl.a")
+ #设置openssl的工具库
+        set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_PREFIX_PATH}/lib/libcrypto.a")
+
+        set(SafeheronCryptoSuites_INCLUDE_DIRS "${CMAKE_PREFIX_PATH}/include/safeheron")
+        set(SafeheronCryptoSuites_LIBRARY "${CMAKE_PREFIX_PATH}/lib/libSafeheronCryptoSuites.a")
+        set(MPCFlow_INCLUDE_DIRS "${CMAKE_PREFIX_PATH}/include/safeheron")
+        set(MPCFlow_LIBRARY "${CMAKE_PREFIX_PATH}/lib/libMPCFlow.a")
+
+    #find_package(SafeheronCryptoSuites REQUIRED)
+    #find_package(MPCFlow REQUIRED)
 
     target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
             ${PROTOBUF_INCLUDE_DIRS}
@@ -201,9 +216,9 @@ if (NOT ${ENABLE_ASSEMBLE})
             )
 
     target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE ${PROTOBUF_LIBRARY_DIRS})
-    target_link_libraries(${CMAKE_PROJECT_NAME}
+    target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
             ${PROTOBUF_LIBRARIES}
-            OpenSSL::Crypto
+            OPENSSL_CRYPTO_LIBRARY
             -ldl
             MPCFlow
             SafeheronCryptoSuites
