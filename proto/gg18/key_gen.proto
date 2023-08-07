@@ -30,11 +30,12 @@ message Round1BCMessage {
 // P2P message in round 1
 message Round1P2PMessage {
     string x_ij = 3;
+    safeheron.proto.NoSmallFactorProof nsf_proof = 4;
 }
 
 // Broadcasting message in round 2
 message Round2BCMessage {
     safeheron.proto.CurvePoint pub = 1;
     safeheron.proto.DLogProof dlog_proof_x = 2;
-    safeheron.proto.PailProof pail_proof = 3;
+    safeheron.proto.PailBlumModulusProof pail_proof = 3;
 }

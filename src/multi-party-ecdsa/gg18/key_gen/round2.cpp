@@ -75,6 +75,16 @@ bool Round2::ReceiveVerify(const std::string &party_id) {
         return false;
     }
 
+    safeheron::zkp::no_small_factor_proof::NoSmallFactorSetUp set_up(sign_key.local_party_.N_tilde_,
+                                                                     sign_key.local_party_.h1_,
+                                                                     sign_key.local_party_.h2_);
+    safeheron::zkp::no_small_factor_proof::NoSmallFactorStatement statement(sign_key.remote_parties_[pos].pail_pub_.n(), 256, 512);
+    ok = p2p_message_arr_[pos].nsf_proof_.Verify(set_up, statement);
+    if (!ok) {
+        ctx->PushErrorCode(1, __FILE__, __LINE__, __FUNCTION__, "ok = message_arr_[pos].nsf_proof_.Verify(set_up, statement)");
+        return false;
+    }
+
     ctx->remote_parties_[pos].y_ = bc_message_arr_[pos].kgd_y_.point_;
 
     return true;
@@ -113,10 +123,9 @@ bool Round2::ComputeVerify() {
     ctx->local_party_.dlog_proof_x_.ProveWithREx(sign_key.local_party_.x_, ctx->local_party_.rand_num_for_schnorr_proof_, ctx->curve_type_);
 
     // Paillier proof
-    ctx->local_party_.pail_proof_.Prove(sign_key.local_party_.pail_priv_,
-                                        sign_key.local_party_.index_,
-                                        sign_key.local_party_.g_x_.x(),
-                                        sign_key.local_party_.g_x_.y());
+    ctx->local_party_.pail_proof_.Prove(sign_key.local_party_.pail_pub_.n(),
+                                        sign_key.local_party_.pail_priv_.p(),
+                                        sign_key.local_party_.pail_priv_.q());
 
     return true;
 }

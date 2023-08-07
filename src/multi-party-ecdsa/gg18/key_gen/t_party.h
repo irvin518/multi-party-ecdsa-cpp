@@ -42,7 +42,7 @@ public:
     commitment::KgdCurvePoint kgd_y_;
 
     // Paillier proof
-    zkp::pail::PailProof pail_proof_;
+    zkp::pail::PailBlumModulusProof pail_proof_;
 
     // DLN Proof
     zkp::dln_proof::DLNProof dln_proof1_;
@@ -56,6 +56,9 @@ public:
 
     // [KGC, KGD] = Com(y_i)
     safeheron::bignum::BN kgc_y_;
+
+    // No small factor proof
+    safeheron::zkp::no_small_factor_proof::NoSmallFactorProof nsf_proof_;
 };
 
 }
